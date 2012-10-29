@@ -15,21 +15,7 @@
 #define COLLISION_CHAIN_MAX     5
 #define REHASH_OPS_THRESHOLD    10
 
-struct stringtable {
-    uint32_t node_count;
-    uint32_t dimension;
-    uint32_t ops_count;
-    uint32_t slots_occupied;
-    float loadf;
-    stringnode_ref *table_head;
-};
 
-struct stringnode {
-    hashcode_t node_hash;
-    cstring node_string;
-    stringnode_ref next;
-    stringnode_ref prev;
-};
 
 stringtable_ref new_stringtable(void);
 void delete_stringtable(stringtable_ref);

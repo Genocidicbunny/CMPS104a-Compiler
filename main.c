@@ -6,19 +6,24 @@
 
 #include "stringtable.h"
 #include "auxlib.h"
+#include "toklist.h"
 
 #define CPP "/usr/bin/cpp"
 #define MAXLINE 256
 
-static int yy_flex_debug = 0, yydebug = 0;
+extern int yy_flex_debug;
+extern int yydebug;
+extern FILE * yyin;
+extern stringtable_ref table;
+extern toklist_ref token_list;
+
 static char * cpp_string = NULL;
 static char * prog_name = NULL;
-static FILE * cpp_in;
-static stringtable_ref table;
 
 void cpp_popen(char *);
-void cpp_pclose(void);
+int cpp_pclose(void);
 void run_scanner(void);
+int yylex(void);
 
 int main(int argc, char**argv) {
     char * filename;
@@ -55,6 +60,8 @@ int main(int argc, char**argv) {
     strncpy(prog_name, basename(filename), strlen(basename(filename)));
 
     table = new_stringtable();
+
+    token_list = new_toklist();
     DEBUGSTMT('a', debugdump_stringtable(table, stderr););
     DEBUGF('f', "FILENAME: %s\n", filename);
     cpp_popen(filename);
@@ -64,7 +71,7 @@ int main(int argc, char**argv) {
     run_scanner();
     DEBUGF('a', "SCANNER DONE");
 
-    cpp_pclose();
+    if(cpp_pclose() != 0) return get_exitstatus();
     int prog_base_length;
     if(strrchr(prog_name, '.') != NULL)
         prog_base_length = strrchr(prog_name, '.') - prog_name;
@@ -75,15 +82,25 @@ int main(int argc, char**argv) {
     strncpy(str_prog_name, prog_name, prog_base_length);
     strcat(str_prog_name, ".str");
 
+    char *tok_prog_name = (char *)calloc(strlen(str_prog_name) + 1, sizeof(char));
+    strncpy(tok_prog_name, prog_name, prog_base_length);
+    strcat(tok_prog_name, ".tok");
+
     DEBUGF('f', "STR FILENAME: %s\n", str_prog_name);
-    FILE *dump = fopen(str_prog_name, "w");
-    debugdump_stringtable(table, dump);
+    FILE *dump_str = fopen(str_prog_name, "w");
+    FILE *dump_tok = fopen(tok_prog_name, "w");
+    debugdump_stringtable(table, dump_str);
     DEBUGSTMT('a',debugdump_stringtable(table, stderr););
-    
+    dump_toklist(token_list, dump_tok);
+    fclose(dump_str);
+    fclose(dump_tok);
+
     delete_stringtable(table);
+    delete_toklist(token_list);
 
     free(cpp_string);
     free(str_prog_name);
+    free(tok_prog_name);
     free(prog_name);
     return get_exitstatus();
 }
@@ -98,33 +115,36 @@ void cpp_popen(char * filename) {
     }
     strcat(cpp_command, " ");
     strcat(cpp_command, filename);
-    cpp_in = popen(cpp_command, "r");
+    yyin = popen(cpp_command, "r");
     free(cpp_command);
-    if(cpp_in == NULL){
+    if(yyin == NULL){
         syserrprintf(cpp_command);
         exit(get_exitstatus());
     }
 }
 
-void cpp_pclose(void) {
-    int rc = pclose(cpp_in);
+int cpp_pclose(void) {
+    int rc = pclose(yyin);
     DEBUGF('c', "CPP RC: %d\n", rc);
     if(rc) {
         errprintf("CPP Error! Code %d\n", rc);
     }
+    return rc;
 }
 
 void run_scanner(void) {
-    char buf[MAXLINE];
-    char* savepos;
-    char* token;
-    while(memset(buf, 0, MAXLINE), (fgets(buf, MAXLINE, cpp_in)) != NULL) {
-        token = strtok_r(buf, "\040\n\t", &savepos);
-        if(token == NULL || token[0] == '#') continue;
-        while(token != NULL) {
-            DEBUGF('t', "TOKEN: %s\n", token);
-            intern_stringtable(table, token);
-            token = strtok_r(NULL, "\040\n\t", &savepos);
-        }
-    }
+    while(yylex() != 0);
+
+    // char buf[MAXLINE];
+    // char* savepos;
+    // char* token;
+    // while(memset(buf, 0, MAXLINE), (fgets(buf, MAXLINE, yyin)) != NULL) {
+    //     token = strtok_r(buf, "\040\n\t", &savepos);
+    //     if(token == NULL || token[0] == '#') continue;
+    //     while(token != NULL) {
+    //         DEBUGF('t', "TOKEN: %s\n", token);
+    //         intern_stringtable(table, token);
+    //         token = strtok_r(NULL, "\040\n\t", &savepos);
+    //     }
+    // }
 }

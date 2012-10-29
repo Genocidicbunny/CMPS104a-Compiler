@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #include "auxlib.h"
-#include "stringtable.h"
+// #include "stringtable.h"
 
 typedef struct astree_rep *astree;
 

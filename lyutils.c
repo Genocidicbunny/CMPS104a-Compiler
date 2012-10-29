@@ -110,7 +110,7 @@ void scanner_include (void) {
    }else {
       char *newfilename = strdup (filename);
       assert (newfilename != NULL);
-      printf (";# %d \"%s\"\n", linenr, newfilename);
+      DEBUGF ('m', ";# %d \"%s\"\n", linenr, newfilename);
       scanner_newfilename (newfilename);
       scan_linenr = linenr - 1;
       DEBUGF ('m', "filename=%s, scan_linenr=%d\n",

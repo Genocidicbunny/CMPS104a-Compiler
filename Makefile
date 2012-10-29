@@ -4,8 +4,8 @@ LINT 	= lint -errchk=%all
 SPLINT	= splint -namechecks +posixlib +standard 
 MKDEPS	= gcc -MM
 
-SRCS_C 	= astree.c lyutils.c auxlib.c strhash.c stringtable.c main.c
-SRCS_H 	= astree.h astree.rep.h lyutils.h auxlib.h strhash.h stringtable.h
+SRCS_C 	= astree.c lyutils.c auxlib.c strhash.c stringtable.c main.c toklist.c
+SRCS_H 	= astree.h astree.rep.h lyutils.h auxlib.h strhash.h stringtable.h toklist.h
 SRCS_L 	= scanner.l
 SRCS_Y 	= parser.y
 CLGEN	= yylex.c

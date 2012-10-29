@@ -3,6 +3,7 @@
 
 #include "stringtable.h"
 #include "auxlib.h"
+#include "astree.h"
 
 struct astree_rep {
    char *tag;           // tag field to verify class membership
