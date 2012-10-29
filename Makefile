@@ -1,5 +1,5 @@
 
-GCC     = gcc -g -O0 -Wall -Wextra -std=gnu99
+GCC     = gcc  -DNDEBUG -g -O0 -Wall -Wextra -std=gnu99
 LINT 	= lint -errchk=%all
 SPLINT	= splint -namechecks +posixlib +standard 
 MKDEPS	= gcc -MM

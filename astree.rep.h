@@ -4,6 +4,9 @@
 #include "stringtable.h"
 #include "auxlib.h"
 
+struct astree_rep;
+typedef struct astree_rep *astree;
+
 struct astree_rep {
    char *tag;           // tag field to verify class membership
    int symbol;          // token code
