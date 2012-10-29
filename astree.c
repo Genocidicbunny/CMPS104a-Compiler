@@ -81,7 +81,7 @@ static void dump_node (FILE *outfile, astree node, int depth) {
    fprintf (outfile, "%p-> astree {%s(%d), %d:%d.%03d, %p->\"%s\",\n",
              (void*) node, get_yytname (node->symbol), node->symbol,
              node->filenr, node->linenr, node->offset,
-             node->lexinfo, (node->lexinfo)->node_string);
+             node->lexinfo, (node->lexinfo));
    fprintf (outfile, "%*sfirst=%p, last=%p, next=%p}",
              depth * 3 + 12, "", (void*) node->first,
              (void*) node->last, (void*) node->next);
@@ -91,7 +91,7 @@ static void dump_astree_rec (FILE *outfile, astree root, int depth) {
    astree child = NULL;
    if (root == NULL) return;
    assert (is_astree (root));
-   fprintf (outfile, "%*s%s ", depth * 3, "", (root->lexinfo)->node_string);
+   fprintf (outfile, "%*s%s ", depth * 3, "", (root->lexinfo));
    dump_node (outfile, root, depth);
    fprintf (outfile, "\n");
    for (child = root->first; child != NULL; child = child->next) {
