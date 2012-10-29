@@ -84,7 +84,7 @@ dump_toklist(toklist_ref list, FILE * output) {
     toknode_ref mover;
     
     for(mover = list->head->next; mover != NULL; mover = mover->next) {
-        fprintf(output, "%s\n", mover->token_string);
+        fprintf(output, "%s", mover->token_string);
         DEBUGF('k', "%s\n", mover->token_string);
     }
 }

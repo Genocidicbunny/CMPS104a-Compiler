@@ -34,21 +34,21 @@ OPERATOR	[\-\+\/\*\=\%\!\(\)\[\]\{\}\.\,\;]
 IDENT   	({LETTER}({LETTER}|{DIGIT})*)
 BADID       ({DIGIT}({LETTER}|{DIGIT})*)
 NUMBER		{DIGIT}({DIGIT})*
-STRING      (\"([^\\"\n]|\\[\\’"0nt])*\")
-BADSTR      (\"([^\\"\n]|\\[\\’"0nt])*$)
-CHAR        (\'[^\n\'\\']|\\[\\\'\"n0t]\')
+STRING      (\"([^\\"\n]|\\[\\'"0nt])*\")
+BADSTR      (\"([^\\"\n]|\\[\\’"0nt])*\n)
+CHAR        ('([^\\'\n]|\\[\\'"0nt])')
 BADCHAR     (\'(([^\n\'\\][^\n\'\\]+)|(\\[\\\'\"n0t][^\n\'\\]+))\')
 COMMENT     (\/\/.*)
 
 %%
 
-"#".*			{ tlist_scanner_include(); 	}
-[\040\t]+		{ IGNORE(witespace); 		}
-\n 				{ scanner_newline(); 		}
+"#".*			{ tlist_scanner_include(); 	                }
+[\040\t]+		{ IGNORE(witespace); 		                }
+\n 				{ scanner_newline(); 		                }
 
-"void"			{ return tlist_yylval_token(TOK_VOID); 	}
-"bool"			{ return tlist_yylval_token(TOK_BOOL); 	}
-"char"			{ return tlist_yylval_token(TOK_CHAR); 	}
+"void"			{ return tlist_yylval_token(TOK_VOID); 	    }
+"bool"			{ return tlist_yylval_token(TOK_BOOL); 	    }
+"char"			{ return tlist_yylval_token(TOK_CHAR); 	    }
 "int"			{ return tlist_yylval_token(TOK_INT);		}
 "string"		{ return tlist_yylval_token(TOK_STRING); 	}
 "struct"        { return tlist_yylval_token(TOK_STRUCT);    }
@@ -59,33 +59,35 @@ COMMENT     (\/\/.*)
 "new"			{ return tlist_yylval_token(TOK_NEW); 		}
 "false"			{ return tlist_yylval_token(TOK_FALSE); 	}
 "true"			{ return tlist_yylval_token(TOK_TRUE);	 	}
-"null"          { return tlist_yylval_token(TOK_NULL);     }
+"null"          { return tlist_yylval_token(TOK_NULL);      }
 "ord"			{ return tlist_yylval_token(TOK_ORD); 		}
 "chr"			{ return tlist_yylval_token(TOK_CHR); 		}
 
-{OPERATOR}		{ return tlist_yylval_token((int)*yytext); }
+{OPERATOR}		{ return tlist_yylval_token((int)*yytext);  }
 "=="			{ return tlist_yylval_token(TOK_EQ); 		}
 "<="			{ return tlist_yylval_token(TOK_LE); 		}
 ">="			{ return tlist_yylval_token(TOK_GE); 		}
 "<"				{ return tlist_yylval_token(TOK_LT); 		}
 ">"				{ return tlist_yylval_token(TOK_GT); 		}
-"[]"			{ return tlist_yylval_token(TOK_ARRAY);	}
+"[]"			{ return tlist_yylval_token(TOK_ARRAY);	    }
 
 {NUMBER}		{ return tlist_yylval_token(TOK_INTCON);	}
-{IDENT}	        { return tlist_yylval_token(TOK_IDENT);	}
+{IDENT}	        { return tlist_yylval_token(TOK_IDENT);	    }
 {BADID}         { scanner_badtoken(yytext);
-                  return tlist_yylval_token(TOK_IDENT);       }
+                  return tlist_yylval_token(TOK_IDENT);     }
 
-{STRING}        { return tlist_yylval_token(TOK_STRINGCON);}
-{CHAR}          { return tlist_yylval_token(TOK_CHARCON);  }
+{STRING}        { return tlist_yylval_token(TOK_STRINGCON); }
+{CHAR}          { return tlist_yylval_token(TOK_CHARCON);   }
 
 {BADSTR}        { tlist_scanner_badtoken(yytext);
-                  return tlist_yylval_token(TOK_STRINGCON);}
+                  return tlist_yylval_token(TOK_STRINGCON); }
 
 {BADCHAR}       { tlist_scanner_badtoken(yytext);
-                  return tlist_yylval_token(TOK_CHARCON);  }
+                  return tlist_yylval_token(TOK_CHARCON);   }
 
-.               { tlist_scanner_badchar(*yytext);         }
+{COMMENT}       { IGNORE(comment);                          }
+
+.               { tlist_scanner_badchar(*yytext);           }
 
 
 

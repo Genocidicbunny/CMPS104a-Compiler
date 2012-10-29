@@ -7,15 +7,15 @@
 #include "stringtable.h"
 #include "auxlib.h"
 #include "toklist.h"
+#include "lyutils.h"
 
 #define CPP "/usr/bin/cpp"
 #define MAXLINE 256
 
-extern int yy_flex_debug;
-extern int yydebug;
 extern FILE * yyin;
 extern stringtable_ref table;
 extern toklist_ref token_list;
+extern int yy_flex_debug;
 
 static char * cpp_string = NULL;
 static char * prog_name = NULL;
@@ -28,6 +28,7 @@ int yylex(void);
 int main(int argc, char**argv) {
     char * filename;
     set_execname(argv[0]);
+    yy_flex_debug = 0;
     
     //Parse options
     int option;
