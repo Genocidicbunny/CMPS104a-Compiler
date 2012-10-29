@@ -38,7 +38,8 @@ astree new_astree (int symbol, int filenr, int linenr, int offset,
    tree->next = NULL;
    DEBUGF ('f', "malloc (%d) = %p-> %d:%d.%d: %s: %p->\"%s\"\n",
            size, tree, tree->filenr, tree->linenr, tree->offset,
-           get_yytname (tree->symbol), tree->lexinfo, tree->lexinfo->node_string);
+           get_yytname (tree->symbol), tree->lexinfo, 
+           tree->lexinfo->node_string);
    return tree;
 }
 
@@ -90,7 +91,8 @@ static void dump_astree_rec (FILE *outfile, astree root, int depth) {
    astree child = NULL;
    if (root == NULL) return;
    assert (is_astree (root));
-   fprintf (outfile, "%*s%s ", depth * 3, "", (root->lexinfo)->node_string);
+   fprintf (outfile, "%*s%s ", depth * 3, "", 
+            (root->lexinfo)->node_string);
    dump_node (outfile, root, depth);
    fprintf (outfile, "\n");
    for (child = root->first; child != NULL; child = child->next) {
@@ -126,7 +128,8 @@ void freeast (astree root) {
    }
    DEBUGF ('f', "free [%X]-> %d:%d.%d: %s: %p->\"%s %d\")\n",
            (uintptr_t) root, root->filenr, root->linenr, root->offset,
-            get_yytname (root->symbol), root->lexinfo, root->lexinfo->node_string, root->lexinfo->node_hash);
+            get_yytname (root->symbol), root->lexinfo, 
+            root->lexinfo->node_string, root->lexinfo->node_hash);
    //free (root->lexinfo);
    memset (root, 0, sizeof (struct astree_rep));
    free (root);

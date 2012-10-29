@@ -78,11 +78,13 @@ int main(int argc, char**argv) {
     else
         prog_base_length = strlen(prog_name);
 
-    char* str_prog_name = (char *)calloc(prog_base_length + 5, sizeof(char));
+    char* str_prog_name = (char *)calloc(prog_base_length + 5, 
+                                            sizeof(char));
     strncpy(str_prog_name, prog_name, prog_base_length);
     strcat(str_prog_name, ".str");
 
-    char *tok_prog_name = (char *)calloc(strlen(str_prog_name) + 1, sizeof(char));
+    char *tok_prog_name = (char *)calloc(strlen(str_prog_name) + 1, 
+                                            sizeof(char));
     strncpy(tok_prog_name, prog_name, prog_base_length);
     strcat(tok_prog_name, ".tok");
 
@@ -107,7 +109,8 @@ int main(int argc, char**argv) {
 
 void cpp_popen(char * filename) {
     int cpp_string_len = cpp_string == NULL ? 0 : strlen(cpp_string);
-    char * cpp_command = (char *)malloc(strlen(CPP) + cpp_string_len + strlen(filename) + 5);
+    char * cpp_command = (char *)malloc(strlen(CPP) + cpp_string_len
+                                    + strlen(filename) + 5);
     strcpy(cpp_command, CPP);
     if(cpp_string != NULL) {
         strcat(cpp_command, " -D");
@@ -134,17 +137,4 @@ int cpp_pclose(void) {
 
 void run_scanner(void) {
     while(yylex() != 0);
-
-    // char buf[MAXLINE];
-    // char* savepos;
-    // char* token;
-    // while(memset(buf, 0, MAXLINE), (fgets(buf, MAXLINE, yyin)) != NULL) {
-    //     token = strtok_r(buf, "\040\n\t", &savepos);
-    //     if(token == NULL || token[0] == '#') continue;
-    //     while(token != NULL) {
-    //         DEBUGF('t', "TOKEN: %s\n", token);
-    //         intern_stringtable(table, token);
-    //         token = strtok_r(NULL, "\040\n\t", &savepos);
-    //     }
-    // }
 }

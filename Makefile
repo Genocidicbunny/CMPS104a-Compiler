@@ -26,7 +26,6 @@ all: ${BIN}
 ${BIN}: ${OBJS}
 	gcc -o${BIN} ${OBJS}
 
-
 ${CLGEN} : ${SRCS_L}
 	flex -o${CLGEN} ${SRCS_L} 2>${LREPORT}
 	rm lex.backup
